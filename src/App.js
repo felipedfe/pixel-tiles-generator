@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Pixel from './components/Pixel';
 import { CirclePicker } from 'react-color'
@@ -23,11 +23,13 @@ const GenerateImageBtn = styled.button`
 
 function App() {
   const [selectedColor, setSelectedColor] = useState("#ba68c8");
+
+
   const boardSize = 400;
   const numberOfColumnsAndRows = 15;
 
   const boardGrid = new Array(numberOfColumnsAndRows).fill("");
-  const pixelSize = boardSize / numberOfColumnsAndRows;
+  const pixelSize = (boardSize / numberOfColumnsAndRows).toFixed(2);
   console.log(pixelSize);
 
   const colorSet = [
