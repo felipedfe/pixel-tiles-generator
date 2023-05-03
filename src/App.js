@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import Pixel from './components/Pixel';
 import { CirclePicker } from 'react-color'
+import domtoimage from 'dom-to-image';
+import { saveAs } from "file-saver";
 import './App.css';
+
+const Main = styled.main`
+  padding: 3rem;
+`
 
 const Board = styled.div`
 width: ${(props) => props.boardSize}px;
@@ -10,6 +16,9 @@ width: ${(props) => props.boardSize}px;
 
 const Row = styled.div`
 display: flex;
+`
+const GenerateImageBtn = styled.button`
+
 `
 
 function App() {
@@ -41,27 +50,42 @@ function App() {
     setSelectedColor(hex)
   };
 
+  const handleGenerate = () => {
+    domtoimage.toBlob(document.getElementById("image")).then(function (blob) {
+      saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
+    });
+  };
+
   return (
-    <>
+    <Main>
       <CirclePicker
         colors={colorSet}
         onChange={(e) => handleChange(e)}
-        width='200px'
+        // width='200px'
+        width='100%'
         circleSize={45}
       />
 
-      <Board boardSize={boardSize}>
-        {
-          boardGrid.map(() => {
-            return (
-              <Row>
-                {boardGrid.map(() => <Pixel selectedColor={selectedColor} pixelSize={pixelSize} />)}
-              </Row>
-            )
-          })
-        }
-      </Board>
-    </>
+      <section id="image">
+        <Board boardSize={boardSize}>
+          {
+            boardGrid.map(() => {
+              return (
+                <Row>
+                  {boardGrid.map(() => <Pixel selectedColor={selectedColor} pixelSize={pixelSize} />)}
+                </Row>
+              )
+            })
+          }
+        </Board>
+      </section>
+      <GenerateImageBtn
+        type="button"
+        onClick={handleGenerate}
+      >
+        Generate Image
+      </GenerateImageBtn>
+    </Main>
   );
 }
 
