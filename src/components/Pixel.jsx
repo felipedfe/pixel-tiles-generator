@@ -6,6 +6,7 @@ const StyledPixel = styled.button`
   height: ${(props) => props.pixelSize}px;
   background-color: ${(props) => props.currentColor};
   border: solid gray 1px;
+  /* border: none; */
 
   &:active {
     background-color: aqua;
@@ -17,6 +18,7 @@ function Pixel({ pixelSize, selectedColor }) {
 
   return (
     <StyledPixel
+      className="pixel"
       onClick={() => setCurrentColor(selectedColor)}
       currentColor={currentColor}
       pixelSize={pixelSize}

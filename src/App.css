@@ -4,11 +4,11 @@
   box-sizing: border-box;
 }
 
-.board {
+#board {
   /* display: flex; */
-  width: 400px;
+  /* width: 400px; */
   /* border: solid pink 2px; */
-  background-color: red;
+  /* background-color: red; */
 }
 
 .pixel {
@@ -17,6 +17,10 @@
   /* border: solid 2px gray; */
 }
 
-.row{
+.row {
   display: flex;
+}
+
+.image>* {
+  border:none;  
 }

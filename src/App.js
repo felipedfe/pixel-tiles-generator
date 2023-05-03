@@ -24,7 +24,6 @@ const GenerateImageBtn = styled.button`
 function App() {
   const [selectedColor, setSelectedColor] = useState("#ba68c8");
 
-
   const boardSize = 400;
   const numberOfColumnsAndRows = 15;
 
@@ -52,11 +51,22 @@ function App() {
     setSelectedColor(hex)
   };
 
-  const handleGenerate = () => {
-    domtoimage.toBlob(document.getElementById("image")).then(function (blob) {
-      saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
-    });
+  const handleGenerate = async () => {
+    const pixelsCollection = document.getElementsByClassName("pixel");
+    const pixels = Array.from(pixelsCollection);
+    pixels.forEach((pixel) =>pixel.style.border = "none")
+
+    // domtoimage.toBlob(document.getElementById("image")).then(function (blob) {
+    //   saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
+    // });
+    const blob = await domtoimage.toBlob(document.getElementById("image"));
+    console.log(blob)
+    saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
+
+    pixels.forEach((pixel) =>pixel.style.border = "solid gray 1px")
   };
+
+  console.log(document.getElementById("board"))
 
   return (
     <Main>
@@ -69,7 +79,7 @@ function App() {
       />
 
       <section id="image">
-        <Board boardSize={boardSize}>
+        <Board id='board' boardSize={boardSize}>
           {
             boardGrid.map(() => {
               return (
