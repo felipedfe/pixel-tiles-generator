@@ -23,6 +23,7 @@ const GenerateImageBtn = styled.button`
 
 function App() {
   const [selectedColor, setSelectedColor] = useState("#ba68c8");
+  const [blobState, setBlobState] = useState("")
 
   const boardSize = 400;
   const numberOfColumnsAndRows = 15;
@@ -51,22 +52,33 @@ function App() {
     setSelectedColor(hex)
   };
 
+  const blobToBase64 = async (blob) => {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  }
+
   const handleGenerate = async () => {
     const pixelsCollection = document.getElementsByClassName("pixel");
     const pixels = Array.from(pixelsCollection);
-    pixels.forEach((pixel) =>pixel.style.border = "none")
+    pixels.forEach((pixel) => pixel.style.border = "none")
 
     // domtoimage.toBlob(document.getElementById("image")).then(function (blob) {
     //   saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
     // });
-    const blob = await domtoimage.toBlob(document.getElementById("image"));
-    console.log(blob)
+    const blob = await domtoimage.toBlob(document.getElementById("board"));
+    // var objectURL = URL.createObjectURL(blob);
+    // console.log(objectURL)
+    // setBlobState(objectURL)
+    const test = await blobToBase64(blob);
+    console.log("----->>>>", test.split(",")[1]);
+    setBlobState(test)
     saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
 
-    pixels.forEach((pixel) =>pixel.style.border = "solid gray 1px")
+    pixels.forEach((pixel) => pixel.style.border = "solid gray 1px")
   };
-
-  console.log(document.getElementById("board"))
 
   return (
     <Main>
@@ -97,6 +109,7 @@ function App() {
       >
         Generate Image
       </GenerateImageBtn>
+      <img alt="blob state" src={blobState}></img>
     </Main>
   );
 }
