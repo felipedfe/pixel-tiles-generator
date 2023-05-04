@@ -4,13 +4,24 @@ import Pixel from './components/Pixel';
 import { CirclePicker } from 'react-color'
 import domtoimage from 'dom-to-image';
 import { saveAs } from "file-saver";
+import { initializeApp } from "firebase/app";
 import './App.css';
+
+const firebaseApp = initializeApp({
+  apiKey: "AIzaSyCb1_A3Zox4ZPFIlgCaoRORc4QE4pucxAQ",
+  authDomain: "pixel-art-react-c5e9c.firebaseapp.com",
+  projectId: "pixel-art-react-c5e9c",
+  storageBucket: "pixel-art-react-c5e9c.appspot.com",
+  messagingSenderId: "882241237101",
+  appId: "1:882241237101:web:dc23d651fd65f4b863cf64",
+  measurementId: "G-2E7DH2M8M5"
+});
 
 const Main = styled.main`
   padding: 3rem;
 `
 
-const Board = styled.div`
+const Board = styled.section`
 width: ${(props) => props.boardSize}px;
 `
 
@@ -73,8 +84,9 @@ function App() {
     // console.log(objectURL)
     // setBlobState(objectURL)
     const test = await blobToBase64(blob);
-    console.log("----->>>>", test.split(",")[1]);
-    setBlobState(test)
+    // console.log("----->>>>", test.split(",")[1]);
+    console.log(test);
+    setBlobState(test);
     saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
 
     pixels.forEach((pixel) => pixel.style.border = "solid gray 1px")
@@ -89,20 +101,17 @@ function App() {
         width='100%'
         circleSize={45}
       />
-
-      <section id="image">
-        <Board id='board' boardSize={boardSize}>
-          {
-            boardGrid.map(() => {
-              return (
-                <Row>
-                  {boardGrid.map(() => <Pixel selectedColor={selectedColor} pixelSize={pixelSize} />)}
-                </Row>
-              )
-            })
-          }
-        </Board>
-      </section>
+      <Board id='board' boardSize={boardSize}>
+        {
+          boardGrid.map(() => {
+            return (
+              <Row>
+                {boardGrid.map(() => <Pixel selectedColor={selectedColor} pixelSize={pixelSize} />)}
+              </Row>
+            )
+          })
+        }
+      </Board>
       <GenerateImageBtn
         type="button"
         onClick={handleGenerate}
