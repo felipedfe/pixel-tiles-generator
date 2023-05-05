@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Pixel from './components/Pixel';
 import { CirclePicker } from 'react-color'
@@ -19,14 +19,28 @@ const firebaseApp = initializeApp({
 
 const Main = styled.main`
   padding: 3rem;
+  /* background-color: #2d2d2d; */
+`
+
+const Input = styled.input`
+`
+
+const Console = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  /* flex-direction: column; */
 `
 
 const Board = styled.section`
-width: ${(props) => props.boardSize}px;
+  width: ${(props) => props.boardSize}px;
+  background-color: #2d2d2d;
 `
 
 const Row = styled.div`
-display: flex;
+  display: flex;
+  z-index: 99;
 `
 const GenerateImageBtn = styled.button`
 
@@ -34,20 +48,28 @@ const GenerateImageBtn = styled.button`
 
 function App() {
   const [selectedColor, setSelectedColor] = useState("#ba68c8");
-  const [blobState, setBlobState] = useState("")
+  const [blobState, setBlobState] = useState("");
+  const [resolution, setResolution] = useState(10);
+  const [boardGrid, setBoardGrid] = useState([]);
+  const [pixelSize, setPixelSize] = useState(0);
 
   const boardSize = 400;
-  const numberOfColumnsAndRows = 15;
+  // const numberOfColumnsAndRows = 15;
 
-  const boardGrid = new Array(numberOfColumnsAndRows).fill("");
-  const pixelSize = (boardSize / numberOfColumnsAndRows).toFixed(2);
-  console.log(pixelSize);
+  // const boardGrid = new Array(resolution).fill("");
+  // const pixelSize = (boardSize / resolution).toFixed(2);
+  // console.log(pixelSize);
+
+  useEffect(() => {
+    setBoardGrid(new Array(resolution).fill(""));
+    setPixelSize((boardSize / resolution).toFixed(2));
+  }, [resolution]);
 
   const colorSet = [
     '#D9E3F0',
     '#F47373',
     '#697689',
-    '#37D67A',
+    '#196b00',
     '#2CCCE4',
     '#555555',
     '#dce775',
@@ -55,7 +77,10 @@ function App() {
     '#ba68c8',
     '#0c2ef0',
     '#763ee6',
+    '#ffffff',
     '#000000',
+    '#25e79c',
+
   ]
 
   const handleChange = ({ hex }) => {
@@ -73,8 +98,10 @@ function App() {
 
   const handleGenerate = async () => {
     const pixelsCollection = document.getElementsByClassName("pixel");
+    const board = document.getElementById("board");
     const pixels = Array.from(pixelsCollection);
     pixels.forEach((pixel) => pixel.style.border = "none")
+    board.style.backgroundColor = "transparent";
 
     // domtoimage.toBlob(document.getElementById("image")).then(function (blob) {
     //   saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
@@ -89,29 +116,40 @@ function App() {
     setBlobState(test);
     saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
 
-    pixels.forEach((pixel) => pixel.style.border = "solid gray 1px")
+    pixels.forEach((pixel) => pixel.style.border = "solid #474747 1px")
+    board.style.backgroundColor = "#2d2d2d";
   };
 
   return (
     <Main>
-      <CirclePicker
-        colors={colorSet}
-        onChange={(e) => handleChange(e)}
-        // width='200px'
-        width='100%'
-        circleSize={45}
-      />
-      <Board id='board' boardSize={boardSize}>
-        {
-          boardGrid.map(() => {
-            return (
-              <Row>
-                {boardGrid.map(() => <Pixel selectedColor={selectedColor} pixelSize={pixelSize} />)}
-              </Row>
-            )
-          })
-        }
-      </Board>
+      <label>Choose resolution:
+        <Input
+          type="number"
+          value={resolution}
+          onChange={({ target }) => setResolution(+target.value)}
+        />
+        <span>x {resolution}</span>
+      </label>
+      <Console>
+        <Board id='board' boardSize={boardSize}>
+          {
+            boardGrid.map(() => {
+              return (
+                <Row>
+                  {boardGrid.map(() => <Pixel selectedColor={selectedColor} pixelSize={pixelSize} />)}
+                </Row>
+              )
+            })
+          }
+        </Board>
+        <CirclePicker
+          colors={colorSet}
+          onChange={(e) => handleChange(e)}
+          width='185px'
+          // width='100%'
+          circleSize={45}
+        />  
+      </Console>
       <GenerateImageBtn
         type="button"
         onClick={handleGenerate}

@@ -5,7 +5,8 @@ const StyledPixel = styled.button`
   width: ${(props) => props.pixelSize}px;
   height: ${(props) => props.pixelSize}px;
   background-color: ${(props) => props.currentColor};
-  border: solid gray 1px;
+  border: solid #474747 1px;
+  /* background-color: #0d0d0d; */
   /* border: none; */
 
   &:active {
@@ -14,7 +15,7 @@ const StyledPixel = styled.button`
 `
 
 function Pixel({ pixelSize, selectedColor }) {
-  const [currentColor, setCurrentColor] = useState("#ffffff");
+  const [currentColor, setCurrentColor] = useState("transparent");
 
   return (
     <StyledPixel
