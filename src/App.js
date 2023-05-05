@@ -5,6 +5,14 @@ import { CirclePicker } from 'react-color'
 import domtoimage from 'dom-to-image';
 import { saveAs } from "file-saver";
 import { initializeApp } from "firebase/app";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  deleteDoc,
+  getDocs,
+} from "firebase/firestore";
 import './App.css';
 
 const firebaseApp = initializeApp({
@@ -16,6 +24,9 @@ const firebaseApp = initializeApp({
   appId: "1:882241237101:web:dc23d651fd65f4b863cf64",
   measurementId: "G-2E7DH2M8M5"
 });
+
+const db = getFirestore(firebaseApp);
+const usersCollectionRef = collection(db, "images");
 
 const Main = styled.main`
   padding: 3rem;
@@ -52,6 +63,7 @@ function App() {
   const [resolution, setResolution] = useState(10);
   const [boardGrid, setBoardGrid] = useState([]);
   const [pixelSize, setPixelSize] = useState(0);
+  const [userGallery, setUserGallery] = useState("");
 
   const boardSize = 400;
   // const numberOfColumnsAndRows = 15;
@@ -59,6 +71,17 @@ function App() {
   // const boardGrid = new Array(resolution).fill("");
   // const pixelSize = (boardSize / resolution).toFixed(2);
   // console.log(pixelSize);
+
+  useEffect(() => {
+    const getImages = async () => {
+      const data = await getDocs(usersCollectionRef);
+      // setUserGallery(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      console.log(data)
+    };
+    getImages();
+  }, []);
+
+  console.log(userGallery)
 
   useEffect(() => {
     setBoardGrid(new Array(resolution).fill(""));
@@ -88,6 +111,7 @@ function App() {
     setSelectedColor(hex)
   };
 
+  // função para transformar um blob object em uma string base 64
   const blobToBase64 = async (blob) => {
     return new Promise((resolve, _) => {
       const reader = new FileReader();
@@ -103,26 +127,23 @@ function App() {
     pixels.forEach((pixel) => pixel.style.border = "none")
     board.style.backgroundColor = "transparent";
 
-    // domtoimage.toBlob(document.getElementById("image")).then(function (blob) {
-    //   saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
-    // });
     const blob = await domtoimage.toBlob(document.getElementById("board"));
-    // var objectURL = URL.createObjectURL(blob);
-    // console.log(objectURL)
-    // setBlobState(objectURL)
-    const test = await blobToBase64(blob);
-    // console.log("----->>>>", test.split(",")[1]);
-    console.log(test);
-    setBlobState(test);
+    const result = await blobToBase64(blob);
+    // console.log("----->>>>", blobString.split(",")[1]);
+    // esse split é para não adicionar a string inicial -> data:image/png;base64,
+    const blobString = result.split(",")[1];
+    console.log(blobString);
+    setBlobState(blobString);
     saveAs(blob, `${Math.floor(Math.random() * 1000)}`);
 
-    pixels.forEach((pixel) => pixel.style.border = "solid #474747 1px")
+    pixels.forEach((pixel) => pixel.style.border = "solid #474747 1px");
     board.style.backgroundColor = "#2d2d2d";
   };
 
   return (
     <Main>
-      <label>Choose resolution:
+      <h1>Pixel Tile Generator</h1>
+      <label>Choose pixel size:
         <Input
           type="number"
           value={resolution}
@@ -148,7 +169,7 @@ function App() {
           width='185px'
           // width='100%'
           circleSize={45}
-        />  
+        />
       </Console>
       <GenerateImageBtn
         type="button"

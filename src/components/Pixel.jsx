@@ -10,7 +10,7 @@ const StyledPixel = styled.button`
   /* border: none; */
 
   &:active {
-    background-color: aqua;
+    background-color: #c1c1c1;
   }
 `
 
