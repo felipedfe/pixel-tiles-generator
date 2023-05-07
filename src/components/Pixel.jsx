@@ -14,26 +14,23 @@ const StyledPixel = styled.button`
   }
 `
 
-
-
 function Pixel({ pixelSize, selectedColor }) {
   const [currentColor, setCurrentColor] = useState("transparent");
-  const [deleteColor, setDeleteColor] = useState(false);
 
-  const handleClick = () => {
-    setDeleteColor((prevState) => !prevState);
-    deleteColor ? setCurrentColor("transparent") : setCurrentColor(selectedColor);
-  };
+  // const handleClick = () => {
+  //   setDeleteColor((prevState) => !prevState);
+  //   deleteColor ? setCurrentColor("transparent") : setCurrentColor(selectedColor);
+  // };
 
   return (
     <StyledPixel
       className="pixel"
-      // onClick={() => setCurrentColor(selectedColor)}
-      onClick={handleClick}
+      onMouseOver={() => console.log("over")}
+      onClick={() => setCurrentColor(selectedColor)}
+      // onClick={handleClick}
       currentColor={currentColor}
       pixelSize={pixelSize}
     />
-
   )
 };
 
