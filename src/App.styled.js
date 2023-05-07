@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Main = styled.main`
   padding: 3rem;
+  margin-left: 30%;
   /* background-color: #2d2d2d; */
 `
 

@@ -30,7 +30,6 @@ function App() {
   const [selectedColor, setSelectedColor] = useState("#ffffff");
   const [blobObject, setBlobObject] = useState({});
   const [blobString, setBlobString] = useState("");
-  const [blobState, setBlobState] = useState("");
   const [resolution, setResolution] = useState(10);
   const [boardGrid, setBoardGrid] = useState([]);
   const [pixelSize, setPixelSize] = useState(0);
