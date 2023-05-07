@@ -93,7 +93,7 @@ function App() {
     try {
       const image = await addDoc(collection(db, "images"), { source: blobString });
 
-      console.log("dados salvos com sucessos", image);
+      console.log("Success!", image);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
