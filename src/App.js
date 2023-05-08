@@ -35,6 +35,7 @@ function App() {
   const [pixelSize, setPixelSize] = useState(0);
   const [userGallery, setUserGallery] = useState("");
   const [showGallery, setShowGallery] = useState(false);
+  const [mousePressed, setMousePressed] = useState(false);
 
   const boardSize = 400;
 
@@ -114,12 +115,16 @@ function App() {
         <span>x {resolution}</span>
       </label>
       <Console>
-        <Board id='board' boardSize={boardSize}>
+        <Board
+          onMouseDown={() => setMousePressed(true)}
+          onMouseUp={() => setMousePressed(false)}
+          id='board'
+          boardSize={boardSize}>
           {
             boardGrid.map(() => {
               return (
                 <Row>
-                  {boardGrid.map(() => <Pixel selectedColor={selectedColor} pixelSize={pixelSize} />)}
+                  {boardGrid.map(() => <Pixel mousePressed={mousePressed} selectedColor={selectedColor} pixelSize={pixelSize} />)}
                 </Row>
               )
             })

@@ -6,28 +6,16 @@ const StyledPixel = styled.button`
   height: ${(props) => props.pixelSize}px;
   background-color: ${(props) => props.currentColor};
   border: solid #474747 1px;
-  /* background-color: #0d0d0d; */
-  /* border: none; */
-
-  &:active {
-    background-color: #c1c1c1;
-  }
 `
 
-function Pixel({ pixelSize, selectedColor }) {
+function Pixel({ pixelSize, selectedColor, mousePressed }) {
   const [currentColor, setCurrentColor] = useState("transparent");
-
-  // const handleClick = () => {
-  //   setDeleteColor((prevState) => !prevState);
-  //   deleteColor ? setCurrentColor("transparent") : setCurrentColor(selectedColor);
-  // };
 
   return (
     <StyledPixel
       className="pixel"
-      onMouseOver={() => console.log("over")}
-      onClick={() => setCurrentColor(selectedColor)}
-      // onClick={handleClick}
+      onMouseDown={() => setCurrentColor(selectedColor)}
+      onMouseOver={mousePressed ? () => setCurrentColor(selectedColor) : () => {}}
       currentColor={currentColor}
       pixelSize={pixelSize}
     />
