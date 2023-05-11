@@ -5,21 +5,20 @@ import domtoimage from 'dom-to-image';
 import { saveAs } from "file-saver";
 import {
   addDoc,
-  doc,
-  deleteDoc,
   collection,
   getDocs,
 } from "firebase/firestore";
 import {
   Main,
   Input,
-  Console,
+  ConsoleWrapper,
   Board,
   Row,
   Button,
-} from "./App.styled.js";
+} from "./styles/App.styled.js";
 import colorSet from './colors';
 import { db, usersCollectionRef } from './service/firebase';
+import { GlobalStyles } from './styles/GlobalStyles';
 import './App.css';
 
 function App() {
@@ -74,13 +73,10 @@ function App() {
     board.style.backgroundColor = "transparent";
     const blob = await domtoimage.toBlob(document.getElementById("board"));
     const result = await blobToBase64(blob);
-    // console.log("----->>>>", blobString.split(",")[1]);
     // esse split é para não adicionar a string inicial -> data:image/png;base64,
     // const blobString = result.split(",")[1];
     setBlobString(result);
     setBlobObject(blob);
-    console.log(result);
-    // setBlobState(blobString);
     pixels.forEach((pixel) => pixel.style.border = "solid var(--border) 1px");
     board.style.backgroundColor = "var(--background)";
   };
@@ -104,76 +100,79 @@ function App() {
   };
 
   return (
-    <Main>
-      <h1>Pixel Tile Generator</h1>
-      <label>Choose pixel size:
-        <Input
-          type="number"
-          value={resolution}
-          onChange={({ target }) => setResolution(+target.value)}
-        />
-        <span>x {resolution}</span>
-      </label>
-      <Console>
-        <Board
-          onMouseDown={() => setMousePressed(true)}
-          onMouseUp={() => setMousePressed(false)}
-          id='board'
-          boardSize={boardSize}>
-          {
-            boardGrid.map(() => {
-              return (
-                <Row>
-                  {boardGrid.map(() => <Pixel mousePressed={mousePressed} selectedColor={selectedColor} pixelSize={pixelSize} />)}
-                </Row>
-              )
-            })
-          }
-        </Board>
-        <CirclePicker
-          colors={colorSet}
-          onChange={(e) => handleChange(e)}
-          width='185px'
-          // width='100%'
-          circleSize={45}
-        />
-      </Console>
-      <Button
-        type="button"
-        onClick={handleGenerate}
-      >
-        Generate Image
-      </Button>
-      <Button
-        type="button"
-        onClick={handleDownload}
-      >
-        Download Image
-      </Button>
-      <Button
-        type="button"
-        onClick={handleSave}
-      >
-        Save in your Gallery
-      </Button>
-      <Button
-        type="button"
-        onClick={toggleGallery}
-      >
-        Show Gallery &#x2193;
-      </Button>
-      {
-        showGallery && userGallery.map((image) => {
-          return <>
-            <img
-              alt=''
-              src={image.source}
-            />
-            <hr></hr>
-          </>
-        })
-      }
-    </Main>
+    <>
+      <GlobalStyles />
+      <Main>
+        <h1>Pixel Tile Generator</h1>
+        <label>Choose pixel size:
+          <Input
+            type="number"
+            value={resolution}
+            onChange={({ target }) => setResolution(+target.value)}
+          />
+          <span>x {resolution}</span>
+        </label>
+        <ConsoleWrapper>
+          <Board
+            onMouseDown={() => setMousePressed(true)}
+            onMouseUp={() => setMousePressed(false)}
+            id='board'
+            boardSize={boardSize}>
+            {
+              boardGrid.map(() => {
+                return (
+                  <Row>
+                    {boardGrid.map(() => <Pixel mousePressed={mousePressed} selectedColor={selectedColor} pixelSize={pixelSize} />)}
+                  </Row>
+                )
+              })
+            }
+          </Board>
+          <CirclePicker
+            colors={colorSet}
+            onChange={(e) => handleChange(e)}
+            width='185px'
+            // width='100%'
+            circleSize={45}
+          />
+        </ConsoleWrapper>
+        <Button
+          type="button"
+          onClick={handleGenerate}
+        >
+          Generate Image
+        </Button>
+        <Button
+          type="button"
+          onClick={handleDownload}
+        >
+          Download Image
+        </Button>
+        <Button
+          type="button"
+          onClick={handleSave}
+        >
+          Save in your Gallery
+        </Button>
+        <Button
+          type="button"
+          onClick={toggleGallery}
+        >
+          Show Gallery &#x2193;
+        </Button>
+        {
+          showGallery && userGallery.map((image) => {
+            return <>
+              <img
+                alt=''
+                src={image.source}
+              />
+              <hr></hr>
+            </>
+          })
+        }
+      </Main>
+    </>
   );
 }
 
