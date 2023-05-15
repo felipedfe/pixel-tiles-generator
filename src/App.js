@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Pixel from './components/Pixel';
-import { CirclePicker } from 'react-color'
 import domtoimage from 'dom-to-image';
 import { saveAs } from "file-saver";
 import {
@@ -8,17 +6,13 @@ import {
   collection,
   getDocs,
 } from "firebase/firestore";
-import {
-  Main,
-  Input,
-  ConsoleWrapper,
-  Board,
-  Row,
-  Button,
-} from "./styles/App.styled.js";
-import colorSet from './colors';
+import colorSet from './data/colors';
 import { db, usersCollectionRef } from './service/firebase';
 import { GlobalStyles } from './styles/GlobalStyles';
+import Buttons from './components/Buttons';
+import Console from './components/Console';
+import Input from './components/Input';
+import * as s from "./styles/App.styled.jsx";
 import './App.css';
 
 function App() {
@@ -47,14 +41,12 @@ function App() {
     getImages();
   }, []);
 
-  console.log(userGallery)
-
   useEffect(() => {
     setBoardGrid(new Array(resolution).fill(""));
     setPixelSize((boardSize / resolution).toFixed(2));
   }, [resolution]);
 
-  const handleChange = ({ hex }) => {
+  const handleColorChange = ({ hex }) => {
     console.log(hex);
     setSelectedColor(hex)
   };
@@ -66,7 +58,7 @@ function App() {
       reader.onloadend = () => resolve(reader.result);
       reader.readAsDataURL(blob);
     });
-  }
+  };
 
   const handleGenerate = async () => {
     pixels.forEach((pixel) => pixel.style.border = "none")
@@ -102,76 +94,41 @@ function App() {
   return (
     <>
       <GlobalStyles />
-      <Main>
+      <s.Main>
         <h1>Pixel Tile Generator</h1>
-        <label>Choose pixel size:
-          <Input
-            type="number"
-            value={resolution}
-            onChange={({ target }) => setResolution(+target.value)}
-          />
-          <span>x {resolution}</span>
-        </label>
-        <ConsoleWrapper>
-          <Board
-            onMouseDown={() => setMousePressed(true)}
-            onMouseUp={() => setMousePressed(false)}
-            id='board'
-            boardSize={boardSize}>
-            {
-              boardGrid.map(() => {
-                return (
-                  <Row>
-                    {boardGrid.map(() => <Pixel mousePressed={mousePressed} selectedColor={selectedColor} pixelSize={pixelSize} />)}
-                  </Row>
-                )
-              })
-            }
-          </Board>
-          <CirclePicker
-            colors={colorSet}
-            onChange={(e) => handleChange(e)}
-            width='185px'
-            // width='100%'
-            circleSize={45}
-          />
-        </ConsoleWrapper>
-        <Button
-          type="button"
-          onClick={handleGenerate}
-        >
-          Generate Image
-        </Button>
-        <Button
-          type="button"
-          onClick={handleDownload}
-        >
-          Download Image
-        </Button>
-        <Button
-          type="button"
-          onClick={handleSave}
-        >
-          Save in your Gallery
-        </Button>
-        <Button
-          type="button"
-          onClick={toggleGallery}
-        >
-          Show Gallery &#x2193;
-        </Button>
+        <Input
+          resolution={resolution}
+          setResolution={setResolution}
+        />
+        <Console
+          mousePressed={mousePressed}
+          setMousePressed={setMousePressed}
+          boardGrid={boardGrid}
+          handleColorChange={handleColorChange}
+          boardSize={boardSize}
+          colorSet={colorSet}
+          pixelSize={pixelSize}
+          selectedColor={selectedColor}
+        />
+        <Buttons
+          handleGenerate={handleGenerate}
+          handleDownload={handleDownload}
+          handleSave={handleSave}
+          toggleGallery={toggleGallery}
+        />
         {
-          showGallery && userGallery.map((image) => {
+          showGallery && userGallery.map((image, index) => {
             return <>
               <img
-                alt=''
+                key={index}
+                alt={index}
                 src={image.source}
               />
               <hr></hr>
             </>
           })
         }
-      </Main>
+      </s.Main>
     </>
   );
 }

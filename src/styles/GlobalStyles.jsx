@@ -7,7 +7,7 @@ export const GlobalStyles = createGlobalStyle`
 }
 
 body {
-  background-image: url("images/background-7.jpg");
+  background-image: url("images/background-2.jpg");
 }
 
 * {
